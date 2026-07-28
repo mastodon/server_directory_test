@@ -4,6 +4,7 @@ required:
   - override_description
   - description
   - categories
+  - legal_body_type
 properties:
   domain:
     type: string
