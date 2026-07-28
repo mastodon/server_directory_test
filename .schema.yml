@@ -4,7 +4,6 @@ required:
   - override_description
   - description
   - categories
-  - languages
   - region
 properties:
   domain:
@@ -52,10 +51,8 @@ properties:
       - africa
       - asia
       - oceania
-      - ''
   legal_body_type:
     enum:
       - natural
       - juridicial
-      - null
 additionalProperties: false
