@@ -18,7 +18,7 @@ jobs:
         run: |
           echo ${{ github.event.before }}
 
-      - name: get changed files
+      - name: get changed files from server directory
         id: getfile
         run: |
           if [ $GITHUB_BASE_REF ]; then
