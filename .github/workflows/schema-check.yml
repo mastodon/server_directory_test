@@ -4,11 +4,6 @@ on:
   push:
     paths:
       - 'servers/**'
-  pull_request:
-    branches:
-      - main
-    paths:
-      - 'servers/**'
 
 jobs:
   Schema-validation:
@@ -26,14 +21,14 @@ jobs:
       #   id: getfile
       #   run: |
       #     echo "files=$(git diff --no-commit-id --name-only -r ${{ github.sha }} | xargs)" >> $GITHUB_OUTPUT
+      #           elif [ ${{ github.event.before }} == '0000000000000000000000000000000000000000' ]; then
+      # echo "files=$(git diff-tree --no-commit-id --name-only -r ${{ github.sha }} | xargs)" >> $GITHUB_OUTPUT
       - name: get changed files
         id: getfile
         run: |
           if [ $GITHUB_BASE_REF ]; then
             git fetch origin $GITHUB_BASE_REF --depth=1
             echo "files=$(git diff --name-only origin/$GITHUB_BASE_REF ${{ github.sha }} | xargs)" >> $GITHUB_OUTPUT
-          elif [ ${{ github.event.before }} == '0000000000000000000000000000000000000000' ]; then
-            echo "files=$(git diff-tree --no-commit-id --name-only -r ${{ github.sha }} | xargs)" >> $GITHUB_OUTPUT
           else
             git fetch origin ${{ github.event.before }} --depth=1
             echo "files=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} | xargs)" >> $GITHUB_OUTPUT
