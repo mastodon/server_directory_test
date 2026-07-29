@@ -14,7 +14,7 @@ properties:
   description:
     type: string
   override_language:
-      type: boolean
+    type: boolean
   categories:
     type: array
     items:
@@ -51,10 +51,8 @@ properties:
     - asia
     - oceania
   legal_body_type:
-    oneOf:
-    - type: null
-    - type: object
-      enum:
-      - natural
-      - juridicial
+    type: object
+    enum:
+    - natural
+    - juridicial
 additionalProperties: false
