@@ -2,7 +2,7 @@
 domain: server.something
 override_description: false
 description: 'blublu I change so much'
-override_language:
+override_language: true
 categories:
 - general
 - food
