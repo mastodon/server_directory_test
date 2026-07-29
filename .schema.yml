@@ -1,4 +1,3 @@
----
 type: object
 required:
 - domain
@@ -52,10 +51,8 @@ properties:
     - asia
     - oceania
   legal_body_type:
-    oneOf:
-    - type: null
-    - type: object
-      enum:
-      - natural
-      - juridicial
+    type: object
+    enum:
+    - natural
+    - juridicial
 additionalProperties: false
