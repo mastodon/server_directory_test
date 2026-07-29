@@ -4,7 +4,8 @@ required:
   - override_description
   - description
   - categories
-  - legal_body_type
+  - languages
+  - region
 properties:
   domain:
     type: string
@@ -13,9 +14,7 @@ properties:
   description:
     type: string
   override_language:
-    anyOf:
-      - type: boolean
-      - type: "null"
+      type: boolean
   categories:
     type: array
     items:
