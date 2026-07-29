@@ -52,7 +52,10 @@ properties:
       - asia
       - oceania
   legal_body_type:
-    enum:
-      - natural
-      - juridicial
+    anyOf:
+      - type: null
+      - type: object
+        enum:
+          - natural
+          - juridicial
 additionalProperties: false
