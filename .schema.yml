@@ -38,6 +38,7 @@ properties:
       - regional
       - religion
       - sports
+      - tech
   languages:
     type: array
     items:
