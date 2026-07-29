@@ -21,10 +21,10 @@ jobs:
       - name: get changed files
         id: getfile
         run: |
-          if [ $GITHUB_BASE_REF ]; then
-            echo "files=$(git diff --name-only origin/$GITHUB_BASE_REF ${{ github.sha }}  | grep '^servers/' | xargs)" >> $GITHUB_OUTPUT
-          else [ ${{ github.event.before }} == '0000000000000000000000000000000000000000' ]; then
+          if [ ${{ github.event.before }} == '0000000000000000000000000000000000000000' ]; then
             echo "files=$(git diff-tree --no-commit-id --name-only -r ${{ github.sha }} | grep '^servers/' | xargs)" >> $GITHUB_OUTPUT
+          else
+            echo "files=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep '^servers/'| xargs)" >> $GITHUB_OUTPUT
           fi
 
       - name: echo output
