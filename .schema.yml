@@ -51,7 +51,6 @@ properties:
     - asia
     - oceania
   legal_body_type:
-    type: object
     enum:
     - natural
     - juridicial
