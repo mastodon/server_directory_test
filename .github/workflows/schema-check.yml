@@ -8,11 +8,17 @@ jobs:
       - name: Clone repository
         uses: actions/checkout@v7
 
+      - name: get changed files
+        id: getfile
+        run: |
+          echo "::set-output name=files::$(git diff-tree --no-commit-id --name-only -r ${{ github.sha }} | xargs)"
+
+
       - name: Install check-jsonschema
         run: pip install check-jsonschema
 
       - name: Run Check-jsonschema
-        run: check-jsonschema --schemafile .schema.yml servers/*
+        run: check-jsonschema --schemafile .schema.yml ${{ steps.getfile.outputs.files }}
 
   Lint-yaml:
     runs-on: ubuntu-latest
@@ -23,5 +29,5 @@ jobs:
       - name: Lint yaml files
         uses: ibiqlik/action-yamllint@v3
         with:
-          file_or_dir: servers/*
+          file_or_dir: ${{ steps.getfile.outputs.files }}
           format: github
