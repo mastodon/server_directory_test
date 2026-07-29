@@ -1,5 +1,8 @@
 name: PR Check schema
-on: [push]
+on:
+  push:
+    paths:
+      - 'servers/**'
 
 jobs:
   Schema-validation:
