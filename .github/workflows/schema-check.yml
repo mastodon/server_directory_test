@@ -4,9 +4,6 @@ on:
   push:
     paths:
       - 'servers/**'
-  pull_request:
-    paths:
-      - 'servers/**'
 
 jobs:
   Schema-validation:
@@ -20,7 +17,11 @@ jobs:
       - name: get changed files
         id: getfile
         run: |
-          echo "files=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} | xargs)" >> $GITHUB_OUTPUT
+          if [ "${{ github.event.before }}" == "0000000000000000000000000000000000000000" ]; then
+            echo "files=$(git diff --no-commit-id --name-only -r ${{ github.sha }} | xargs)" >> $GITHUB_OUTPUT
+          else:
+            echo "files=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} | xargs)" >> $GITHUB_OUTPUT
+          fi
 
       - name: echo output
         run: |
