@@ -6,8 +6,5 @@ override_language: false
 categories:
 - games
 languages:
-- german
-- french
-- latin
 region: europe
 legal_body_type: juridicial
