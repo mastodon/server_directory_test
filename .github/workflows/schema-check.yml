@@ -1,10 +1,7 @@
 ---
-name: PR Check schema
+name: Push Check schema
 on:
   push:
-    paths:
-      - 'servers/**'
-  pull_request:
     paths:
       - 'servers/**'
 
@@ -17,10 +14,23 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: echo first commit
+        run: |
+          echo ${{ github.event.before }}
+      # - name: get changed files
+      #   id: getfile
+      #   run: |
+      #     echo "files=$(git diff --no-commit-id --name-only -r ${{ github.sha }} | xargs)" >> $GITHUB_OUTPUT
       - name: get changed files
         id: getfile
         run: |
-          echo "files=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} | xargs)" >> $GITHUB_OUTPUT
+          if [ $GITHUB_BASE_REF ]; then
+            git fetch origin $GITHUB_BASE_REF --depth=1
+            echo "files=$(git diff --name-only origin/$GITHUB_BASE_REF ${{ github.sha }} | xargs)" >> $GITHUB_OUTPUT
+          else
+            git fetch origin ${{ github.event.before }} --depth=1
+            echo "files=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} | xargs)" >> $GITHUB_OUTPUT
+          fi
 
       - name: echo output
         run: |

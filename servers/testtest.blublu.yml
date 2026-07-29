@@ -2,7 +2,9 @@
 domain: testtest.blublu
 override_description: false
 description: dhewio;vhiew;hifge
-override_language:
+override_language: true
+languages:
+- english
 categories:
 - food
-legal_body_type: natural
+legal_body_type:
