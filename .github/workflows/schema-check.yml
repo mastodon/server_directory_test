@@ -14,14 +14,17 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: echo first commit
+        run: |
+          echo ${{ github.event.before }}
+      # - name: get changed files
+      #   id: getfile
+      #   run: |
+      #     echo "files=$(git diff --no-commit-id --name-only -r ${{ github.sha }} | xargs)" >> $GITHUB_OUTPUT
       - name: get changed files
         id: getfile
         run: |
-          if [ "${{ github.event.before }}" == "0000000000000000000000000000000000000000" ]; then
-            echo "files=$(git diff --no-commit-id --name-only -r ${{ github.sha }} | xargs)" >> $GITHUB_OUTPUT
-          else:
-            echo "files=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} | xargs)" >> $GITHUB_OUTPUT
-          fi
+          echo "files=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep -f 'servers/*' | xargs)" >> $GITHUB_OUTPUT
 
       - name: echo output
         run: |
