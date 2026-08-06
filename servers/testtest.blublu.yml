@@ -5,6 +5,7 @@ description: dhewio;vhiew;hifge
 override_language: true
 languages:
 - english
+- french
 categories:
 - food
 - games

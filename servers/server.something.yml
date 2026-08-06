@@ -6,6 +6,11 @@ override_language: true
 categories:
 - general
 - food
+- games
 languages:
 - german
+- french
+- italian
+- polish
+- lithuanian
 region: europe

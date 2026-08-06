@@ -5,6 +5,7 @@ on:
     paths:
       - 'servers/**'
 
+
 jobs:
   Schema-validation:
     runs-on: ubuntu-latest
@@ -21,7 +22,7 @@ jobs:
       - name: get changed files
         id: getfile
         run: |
-          if [ ${{ github.event.before }} == '0000000000000000000000000000000000000000' ]; then
+          if [ -z ${{ github.event.before }} ] || [ ${{ github.event.before }} == '0000000000000000000000000000000000000000' ]|| ! git rev-parse --verify "$BEFORE_SHA" >/dev/null 2>&1; then
             echo "files=$(git diff-tree --no-commit-id --name-only -r ${{ github.sha }} | grep '^servers/' | xargs)" >> $GITHUB_OUTPUT
           else
             echo "files=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep '^servers/'| xargs)" >> $GITHUB_OUTPUT
