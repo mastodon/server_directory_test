@@ -1,9 +1,6 @@
 ---
 name: Push Check schema
-on:
-  push:
-    paths:
-      - 'servers/*'
+on: [push]
 
 jobs:
   Schema-validation:
