@@ -6,6 +6,7 @@ override_language: true
 languages:
 - english
 - french
+- de
 categories:
 - food
 - games
