@@ -1,0 +1,17 @@
+type: object
+required:
+- weight
+- languages
+- countries
+properties:
+  weight:
+    type: integer
+  languages:
+    type: array
+    items:
+      type: string
+  countries:
+    type: array
+    items:
+      type: string
+additionalProperties: false
