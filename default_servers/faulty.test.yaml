@@ -1,9 +1,2 @@
 ---
-countries:
-  - us
-  - de
-  - at
-languages:
-  - en
-  - de
-  - at
+weight: 100
