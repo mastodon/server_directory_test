@@ -2,7 +2,7 @@
 languages:
 - en
 - de
-countries
+countries:
 - uk
 - de
 weight: 100
