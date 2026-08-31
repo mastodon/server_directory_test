@@ -1,0 +1,58 @@
+---
+name: Push Check default server recommendation
+on:
+  push:
+    paths:
+      - 'default_servers/*'
+
+jobs:
+  Schema-validation:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Clone repository
+        uses: actions/checkout@v7
+
+      - name: Install check-jsonschema
+        run: pip install check-jsonschema
+
+      - name: Run Check-jsonschema
+        run: check-jsonschema --schemafile .dsr_schema.yml default_servers/*
+
+  Opt-in-check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Clone repository
+        uses: actions/checkout@v7
+
+      - name: echo first commit
+        run: |
+          echo ${{ github.event.before }}
+
+      - name: get server name from file
+        id: getfile
+        run: |
+          if [ -z ${{ github.event.before }} ] || [ ${{ github.event.before }} == '0000000000000000000000000000000000000000' ]|| ! git rev-parse --verify "$BEFORE_SHA" >/dev/null 2>&1; then
+            echo "files=$(git diff-tree --no-commit-id --name-only -r ${{ github.sha }} | grep '^default_servers/' | xargs)" >> $GITHUB_OUTPUT
+          else
+            echo "files=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep '^default_servers/'| xargs)" >> $GITHUB_OUTPUT
+          fi
+      - name: echo filenameq
+        run: |
+          echo ${{ getfile }}
+
+      - name: remove file suffix
+        id: server_domain
+        run: |
+          echo ${{getfile%.*}} >> $GITHUB_OUTPUT
+
+  Lint-yaml:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Clone repository
+        uses: actions/checkout@v7
+
+      - name: Lint yaml files
+        uses: ibiqlik/action-yamllint@v3
+        with:
+          file_or_dir: default_servers/*
+          format: github
