@@ -33,5 +33,7 @@ jobs:
               if [ "$RESPONSE_CODE" -ne 301 ]; then
                 echo "file is not reachable"
                 exit 1
+              else
+                echo "$server reachable"
               fi
             done
