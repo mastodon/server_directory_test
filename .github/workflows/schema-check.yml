@@ -2,8 +2,6 @@
 name: Push Check schema
 on:
   push:
-    paths:
-      - 'servers/**'
 
 jobs:
   Schema-validation:
@@ -11,32 +9,15 @@ jobs:
     steps:
       - name: Clone repository
         uses: actions/checkout@v7
-        with:
-          fetch-depth: 0
-
-      - name: echo first commit
-        run: |
-          echo ${{ github.event.before }}
-
-      - name: get changed files
-        id: getfile
-        run: |
-          if [ ${{ github.event.before }} == '0000000000000000000000000000000000000000' ]; then
-            echo "files=$(git diff-tree --no-commit-id --name-only -r ${{ github.sha }} | grep '^servers/' | xargs)" >> $GITHUB_OUTPUT
-          else
-            echo "files=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep '^servers/'| xargs)" >> $GITHUB_OUTPUT
-          fi
-
-      - name: echo output
-        run: |
-          echo ${{ steps.getfile.outputs.files }}
 
       - name: Install check-jsonschema
         run: pip install check-jsonschema
 
       - name: Run Check-jsonschema
-        run: check-jsonschema --schemafile .schema.yml ${{ steps.getfile.outputs.files }}
+        run: check-jsonschema --schemafile .schema.yml servers/*
 
+      - name: Run Check-json-dsr-schema
+        run: check-jsonschema --schemafile .dsr_schema.yml default_servers/*
   Lint-yaml:
     runs-on: ubuntu-latest
     steps:
@@ -46,5 +27,10 @@ jobs:
       - name: Lint yaml files
         uses: ibiqlik/action-yamllint@v3
         with:
-          file_or_dir: ${{ steps.getfile.outputs.files }}
+          file_or_dir: servers/*
+          format: github
+      - name: Lint yaml files
+        uses: ibiqlik/action-yamllint@v3
+        with:
+          file_or_dir: default_servers/*
           format: github

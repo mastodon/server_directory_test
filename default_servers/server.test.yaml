@@ -1,0 +1,10 @@
+---
+weight: 100
+countries:
+  - us
+  - de
+  - at
+languages:
+  - en
+  - de
+  - at
