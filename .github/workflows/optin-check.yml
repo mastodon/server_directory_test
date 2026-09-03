@@ -33,7 +33,7 @@ jobs:
               RESPONSE_CODE=$(curl --silent --output /dev/null -I --write-out "%{http_code}" http://${domain}/dsr_opt_in.txt )
               if [ "$RESPONSE_CODE" -ne 301 ]; then
                 echo "$domain is not reachable"
-                FAILED=(($FAILED + 1))
+                FAILED=$((FAILED + 1))
               else
                 echo "$domain reachable"
               fi
