@@ -29,7 +29,7 @@ jobs:
         run: |
             FILES="${{ steps.getfile.outputs.files != '' }}"
             for domain in $FILES; do
-              RESPONSE_CODE=$(curl --silent --output /dev/null -I --write-out "%{http_code}" http://${server}/dsr_opt_in.txt )
+              RESPONSE_CODE=$(curl --silent --output /dev/null -I --write-out "%{http_code}" http://${domain}/dsr_opt_in.txt )
               if [ "$RESPONSE_CODE" -ne 301 ]; then
                 echo "file is not reachable"
                 exit 1
