@@ -27,13 +27,18 @@ jobs:
       - name: Request Opt-in file
         if: ${{ steps.getfile.outputs.files != '' }}
         run: |
+            FAILED=0
             FILES="${{ steps.getfile.outputs.files != '' }}"
             for domain in $FILES; do
               RESPONSE_CODE=$(curl --silent --output /dev/null -I --write-out "%{http_code}" http://${domain}/dsr_opt_in.txt )
               if [ "$RESPONSE_CODE" -ne 301 ]; then
-                echo "file is not reachable"
-                exit 1
+                echo "$domain is not reachable"
+                FAILED=(($FAILED + 1))
               else
-                echo "$server reachable"
+                echo "$domain reachable"
+              fi
+
+              if [ "$FAILED" -gt 0 ]; then
+                exit 1
               fi
             done
