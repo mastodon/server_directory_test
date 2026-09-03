@@ -13,6 +13,7 @@ jobs:
           fetch-depth: 0
 
       - name: Dump GitHub context
+        id: getfile
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
