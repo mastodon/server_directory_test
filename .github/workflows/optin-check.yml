@@ -12,7 +12,7 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Dump GitHub context
+      - name: Get Changed Default Servers
         id: getfile
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -23,3 +23,15 @@ jobs:
       - name: echo output
         run: |
           echo ${{ steps.getfile.outputs.files }}
+
+      - name: Request Opt-in file
+        if: ${{ steps.getfile.outputs.files != '' }}
+        run: |
+            FILES="${{ steps.getfile.outputs.files != '' }}"
+            for domain in $FILES; do
+              RESPONSE_CODE=$(curl --silent --output /dev/null -I --write-out "%{http_code}" http://${server}/dsr_opt_in.txt )
+              if [ "$RESPONSE_CODE" -ne 200 ]; then
+                echo "file is not reachable"
+                exit 1
+              fi
+            done
