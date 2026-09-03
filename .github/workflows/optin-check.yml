@@ -1,0 +1,23 @@
+---
+name: Opt-in check
+on:
+  push:
+
+jobs:
+  Schema-validation:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Clone repository
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+
+      - name: Dump GitHub context
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          echo "files=$(gh pr diff ${{ github.event.pull_request.number }} --name-only | grep '^default_servers/' | xargs)" >> $GITHUB_OUTPUT
+
+      - name: echo output
+        run: |
+          echo ${{ steps.getfile.outputs.files }}
