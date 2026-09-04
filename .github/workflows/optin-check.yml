@@ -34,3 +34,7 @@ jobs:
                 echo "Domain: $domain -> Statuscode: $RESPONSE_CODE |"
               done
             )" >> GITHUB_OUTPUT
+
+      - name: echo codes
+        run: |
+          echo ${{ steps.getfile.outputs.results }}
