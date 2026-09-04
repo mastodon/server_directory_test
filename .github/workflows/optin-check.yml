@@ -29,7 +29,7 @@ jobs:
         run: |
             FAILED=0
             FILES="${{ steps.getfile.outputs.files }}"
-            echo "for domain in $FILES; do
-              RESPONSE_CODE=$(curl --silent --output /dev/null -I --write-out '%{http_code}' 'http://${domain}/dsr_opt_in.txt')
-              echo 'Domain: $domain -> Statuscode: $RESPONSE_CODE'
-            done"
+            for domain in $FILES; do
+              RESPONSE_CODE=$(curl --silent --output /dev/null -I --write-out "%{http_code}" "http://${domain}/dsr_opt_in.txt")
+              echo "Domain: $domain -> Statuscode: $RESPONSE_CODE"
+            done
