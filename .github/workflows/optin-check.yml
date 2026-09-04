@@ -19,7 +19,6 @@ jobs:
 
       - name: Request Opt-in file
         if: ${{ steps.getfile.outputs.files != '' }}
-        shell: bash
         run: |
             FILES="${{ steps.getfile.outputs.files }}"
             for domain in $FILES; do
