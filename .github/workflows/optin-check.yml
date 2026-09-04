@@ -29,13 +29,18 @@ jobs:
         shell: bash
         run: |
             FILES="${{ steps.getfile.outputs.files }}"
-            echo "results=(
-              for domain in $FILES; do
-                RESPONSE_CODE=$(curl --silent --connect-timeout 5 --output /dev/null -I --write-out "%{http_code}" "http://${domain}/dsr_opt_in.txt" || echo "000")
-                echo "Domain: $domain Statuscode: $RESPONSE_CODE"
-              done
-            )"
-            echo "results=$RESPONSE_CODE" >> GITHUB_OUTPUT
+            for domain in $FILES; do
+              RESPONSE_CODE=$(curl --silent --connect-timeout 5 --output /dev/null -I --write-out "%{http_code}" "http://${domain}/dsr_opt_in.txt" || echo "000")
+              echo "Domain: $domain Statuscode: $RESPONSE_CODE"
+              echo "results=$RESPONSE_CODE" >> GITHUB_OUTPUT
+
+              if [ "$RESPONSE_CODE" -ne 301 ]; then
+                echo "$domain is not reachable"
+                FAILED=$((FAILED + 1))
+              else
+                echo "$domain exists and is reachable"
+              fi
+            done
 
       - name: echo codes
         run: |
