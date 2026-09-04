@@ -17,10 +17,6 @@ jobs:
         run: |
           echo "files=$(gh pr diff ${{ github.event.pull_request.number }} --name-only | grep '^default_servers/' | xargs -I {} basename {} .yaml | xargs)" >> $GITHUB_OUTPUT
 
-      - name: echo output
-        run: |
-          echo ${{ steps.getfile.outputs.files }}
-
       - name: Request Opt-in file
         if: ${{ steps.getfile.outputs.files != '' }}
         shell: bash
