@@ -32,7 +32,6 @@ jobs:
             for domain in $FILES; do
               RESPONSE_CODE=$(curl --silent --connect-timeout 5 --output /dev/null -I --write-out "%{http_code}" "http://${domain}/dsr_opt_in.txt" || echo "000")
               echo "Domain: $domain Statuscode: $RESPONSE_CODE"
-              echo "results=$RESPONSE_CODE" >> GITHUB_OUTPUT
 
               if [ "$RESPONSE_CODE" -ne 301 ]; then
                 echo "$domain is not reachable"
@@ -42,6 +41,7 @@ jobs:
               fi
             done
 
-      - name: echo codes
-        run: |
-          echo ${{ steps.getfile.outputs.results }}
+            if [ "$FAILED" -gt 0 ]; then
+              echo "not all endpoint could be reached"
+              exit 1
+            fi
