@@ -29,8 +29,9 @@ jobs:
         run: |
             FILES="${{ steps.getfile.outputs.files }}"
             for domain in $FILES; do
+              echo "Domain: $domain"
               RESPONSE_CODE=$(curl --silent --output /dev/null -I --write-out "%{http_code}" "http://${domain}/dsr_opt_in.txt")
-              echo "Domain: $domain -> Statuscode: $RESPONSE_CODE"
+              echo "Statuscode: $RESPONSE_CODE"
             done
             echo "results=$RESPONSE_CODE" >> GITHUB_OUTPUT
 
