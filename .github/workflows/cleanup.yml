@@ -5,7 +5,7 @@ on:
   # schedule:
   #   - cron: '0 6 * * *' # Every day
   # workflow_dispatch:
-
+  #  for domain in `curl http://127.0.0.1:3000/active-servers/ | tr '[",]' \ `; do echo $domain; done
 permissions:
   contents: write
   pull-requests: write
@@ -19,6 +19,13 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v7
+      - name: Request active server files
+        run: |
+            FILES="add.more.languages allows.all.languages catland.social domain.test european.server for.testing loony.tunes mastodon.social mstdn.srvr other.server test.server"
+            for domain in $FILES; do
+              echo $domain
+              echo "test /n"
+            done
       - name: Remove Test file
         run: |
           if [ -f ${{ env.TEST_FILE_PATH }} ]; then
