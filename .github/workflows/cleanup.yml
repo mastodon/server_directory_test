@@ -20,6 +20,8 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v7
       - name: Read filenames in server dir
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           echo "servers=$(gh repo read-dir servers)"
       - name: Request active server files
