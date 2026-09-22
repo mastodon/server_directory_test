@@ -19,12 +19,14 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v7
+      - name: Read filenames in server dir
+        run: |
+          echo "servers=$(gh repo read-dir servers)"
       - name: Request active server files
         run: |
             FILES="add.more.languages allows.all.languages catland.social domain.test european.server for.testing loony.tunes mastodon.social mstdn.srvr other.server test.server"
             for domain in $FILES; do
               echo $domain
-              echo "test /n"
             done
       - name: Remove Test file
         run: |
