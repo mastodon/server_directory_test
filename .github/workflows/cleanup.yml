@@ -23,7 +23,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          echo "servers=$(gh repo read-dir servers)"
+          echo "servers=$(gh repo read-dir servers --json path,type,size --jq '.[].path')"
       - name: Request active server files
         run: |
             FILES="add.more.languages allows.all.languages catland.social domain.test european.server for.testing loony.tunes mastodon.social mstdn.srvr other.server test.server"
