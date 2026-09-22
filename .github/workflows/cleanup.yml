@@ -20,10 +20,11 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v7
       - name: Read filenames in server dir
+        id: file_path
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          echo "servers=$(gh repo read-dir servers --name-only)"
+          echo "servers=$(gh repo read-dir servers --repo mastodon/server_directory_test --json name,path)" >> $GITHUB_OUTPUT
       - name: Request active server files
         run: |
             FILES="add.more.languages allows.all.languages catland.social domain.test european.server for.testing loony.tunes mastodon.social mstdn.srvr other.server test.server"
