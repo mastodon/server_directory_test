@@ -1,0 +1,41 @@
+---
+name: Cleanup Inactive Server Files
+on:
+  push:
+  # schedule:
+  #   - cron: '0 6 * * *' # Every day
+  # workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+env:
+  TEST_FILE_PATH: ./servers/server.something.yml
+
+jobs:
+  cleanup-files:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+      - name: Remove Test file
+        run: |
+          if [ -f ${{ env.TEST_FILE_PATH }} ]; then
+            rm ${{ env.TEST_FILE_PATH }}
+            echo "Test file removed."
+          else
+            echo "Test file not found."
+            exit  1
+          fi
+        shell: bash
+      # Create or update the pull request
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v8
+        with:
+          commit-message: Remove inactive server files
+          title: Cleanup Server Files (automated)
+          author: GitHub Actions <noreply@github.com>
+          body: Remove inactive server files, automated with GitHub Actions
+          branch: cleanup-servers
+          base: main
