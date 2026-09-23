@@ -13,8 +13,6 @@ permissions:
 env:
   TEST_FILE_PATH: ./servers/server.something.yml
 
-          # echo "server_paths=$(gh repo read-dir servers --repo mastodon/server_directory_test --json name,path --jq '.["entries"]')" >> $GITHUB_OUTPUT
-          # echo $server_paths
 jobs:
   cleanup-files:
     runs-on: ubuntu-latest
@@ -28,19 +26,16 @@ jobs:
         run: |
           echo "server_domains=$(gh repo read-dir servers --repo mastodon/server_directory_test --json name | jq -r '.["entries"] | .[] | .name' | xargs -I {} basename {} .yml | xargs -I {} basename {} .yaml | xargs)" >> $GITHUB_OUTPUT
           echo $server_domains
-
-      # - name: echo server-paths
-      #   run: echo "${{ steps.file_path.outputs.server_paths }}"
       - name: echo server-domains
         run: echo "${{ steps.file_path.outputs.server_domains }}"
       - name: Request active server files
         id: files
-        # filter out which items from the second list are missing from the base list
+        # filter out which items from the server domains list are missing from the active server list
         run: |
           ACTIVE_SERVERS="add.more.languages allows.all.languages catland.social european.server for.testing loony.tunes mastodon.social mstdn.srvr other.server server.something test.server"
           DOMAINS="${{ steps.file_path.outputs.server_domains }}"
-          MISS=$(grep -vxf <(echo "$ACTIVE_SERVERS" | tr ' ' '\n') <(echo "$DOMAINS" | tr ' ' '\n') || true)
-          MISSING=$(echo "$MISS" | tr '\n' ' ')
+          diff=$(grep -vxf <(echo "$ACTIVE_SERVERS" | tr ' ' '\n') <(echo "$DOMAINS" | tr ' ' '\n') || true)
+          MISSING=$(echo "$diff" | tr '\n' ' ')
           echo "missing_domains=$MISSING" >> $GITHUB_OUTPUT
 
           if [ -z "$MISSING" ]; then
@@ -51,18 +46,23 @@ jobs:
         shell: bash
       - name: echo missing-domains
         run: echo "${{ steps.files.outputs.missing_domains }}"
-      - name: Remove Test file
+      # build paths for the missing domains and delete them if the file can be found
+      - name: Remove file of inactive server
         if: ${{ steps.files.outputs.missing_domains != '' }}
         run: |
           MISSING="${{ steps.files.outputs.missing_domains }}"
 
           for domain in $MISSING; do
-            path="./servers/$domain.yaml"
-            if [ -f  $path ]; then
-              rm $path
-              echo "Test file removed."
+            server_path="./servers/$domain.yaml"
+            default_server_path="./default_servers/$domain.yaml"
+            if [ -f  $server_path ]; then
+              rm $server_path
+              echo "$server_path removed."
+            elif [ -f $default_server_path ]; then
+              rm $default_server_path
+              echo "$default_server_path removed."
             else
-              echo "$path not fund."
+              echo "$server_path and $default_server_path not fund."
               exit 1
             fi
           done
