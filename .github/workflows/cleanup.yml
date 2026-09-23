@@ -25,7 +25,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           echo "server_domains=$(gh repo read-dir servers --repo mastodon/server_directory_test --json name | jq -r '.["entries"] | .[] | .name' | xargs -I {} basename {} .yml | xargs -I {} basename {} .yaml | xargs)" >> $GITHUB_OUTPUT
-          echo $server_domains
       - name: echo server-domains
         run: echo "${{ steps.file_path.outputs.server_domains }}"
       # when active servers are not empty the response gets formatted
