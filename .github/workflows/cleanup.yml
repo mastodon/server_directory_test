@@ -57,13 +57,13 @@ jobs:
           MISSING="${{ steps.files.outputs.missing_domains }}"
 
           for domain in $MISSING; do
-            path="./servers/$domain"
+            path="./servers/$domain.yaml"
             if [ -f  $path ]; then
               rm $path
               echo "Test file removed."
             else
               echo "$path not fund."
-              exit  1
+              exit 1
             fi
           done
         shell: bash
