@@ -30,19 +30,20 @@ jobs:
         run: echo "${{ steps.file_path.outputs.server_domains }}"
       # when active servers are not empty the response gets formatted
       - name: Request active server files
+        id: files
         # ACTIVE_SERVERS=$(curl --silent --connect-timeout 5 "http://${domain}/dsr_opt_in.txt" )
         run: |
             ACTIVE_SERVERS=["add.more.languages","allows.all.languages","catland.social","domain.test","european.server","for.testing","loony.tunes","mastodon.social","mstdn.srvr","other.server","test.server"]
-
+            formatted=$($ACTIVE_SERVERS | tr '[",]' ' ')
+            echo "active_servers=$formatted" >> $GITHUB_OUTPUT
+            echo $formatted
             if [ -n "$ACTIVE_SERVERS" ]; then
-              formatted=$($ACTIVE_SERVERS | tr '[",]' ' ')
-              echo "active_servers=$formatted" >> $GITHUB_OUTPUT
             else
               echo "no active servers found"
               exit 0
             fi
       - name: echo formatted-domains
-        run: echo "${{ steps.outputs.active_servers }}"
+        run: echo "${{ steps.files.outputs.active_servers }}"
       - name: Compare active servers with server files
         id: files
         # filter out which items from the server domains list are missing from the active server list
