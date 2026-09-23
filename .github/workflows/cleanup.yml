@@ -34,19 +34,22 @@ jobs:
       - name: echo server-domains
         run: echo "${{ steps.file_path.outputs.server_domains }}"
       - name: Request active server files
+        id: files
         # filter out which items from the second list are missing from the base list
         run: |
-          FILES="add.more.languages allows.all.languages catland.social test.com european.server for.testing loony.tunes mastodon.social mstdn.srvr other.server server.something test.server"
+          ACTIVE_SERVERS="add.more.languages allows.all.languages catland.social test.com european.server for.testing loony.tunes mastodon.social mstdn.srvr other.server server.something test.server"
           DOMAINS="${{ steps.file_path.outputs.server_domains }}"
-          echo $DOMAINS
-          MISSING=$(grep -vxf <(echo "$FILES" | tr ' ' '\n') <(echo "${{ steps.file_path.outputs.server_domains }}" | tr ' ' '\n') || true)
+          echo "MISSING=$(grep -vxf <(echo "$ACTIVE_SERVERS" | tr ' ' '\n') <(echo "$DOMAINS" | tr ' ' '\n') || true)" >> $GITHUB_OUTPUT
+
           if [ -z "$MISSING" ]; then
-            echo "all elements from server domains are in FILES"
+            echo "all elements from server domains are in ACTIVE_SERVERS"
           else
             MISSING_SPACE=$(echo "$MISSING" | tr '\n' ' ')
             echo "missing elements $MISSING_SPACE"
           fi
         shell: bash
+      - name: echo smissing-domains
+        run: echo "${{ steps.files.outputs.MISSING }}"
       - name: Remove Test file
         run: |
           if [ -f ${{ env.TEST_FILE_PATH }} ]; then
