@@ -45,7 +45,7 @@ jobs:
               MISSING_SPACE=$(echo "$MISSING" | tr '\n' ' ')
               echo "missing elements $MISSING_SPACE"
             fi
-
+        shell: bash
       - name: Remove Test file
         run: |
           if [ -f ${{ env.TEST_FILE_PATH }} ]; then
