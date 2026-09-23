@@ -24,9 +24,14 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          echo "servers=$(gh repo read-dir servers --repo mastodon/server_directory_test --json name,path)" >> $GITHUB_OUTPUT
-      - name: echo servers
-        run: echo "${{ steps.file_path.outputs.servers }}"
+          echo "server_paths=$(gh repo read-dir servers --repo mastodon/server_directory_test --json name,path --jq '.["entries"]')" >> $GITHUB_OUTPUT
+          echo $server_paths
+          echo "server_domains=$(gh repo read-dir servers --repo mastodon/server_directory_test --json name --jq '.["entries"]')" >> $GITHUB_OUTPUT
+          echo $server_domains
+      - name: echo server-paths
+        run: echo "${{ steps.file_path.outputs.server_paths }}"
+      - name: echo server-domains
+        run: echo "${{ steps.file_path.outputs.server_domains }}"
       - name: Request active server files
         run: |
             FILES="add.more.languages allows.all.languages catland.social domain.test european.server for.testing loony.tunes mastodon.social mstdn.srvr other.server test.server"
