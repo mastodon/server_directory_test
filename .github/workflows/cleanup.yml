@@ -34,10 +34,11 @@ jobs:
         # ACTIVE_SERVERS=$(curl --silent --connect-timeout 5 "http://${domain}/dsr_opt_in.txt" )
         run: |
             ACTIVE_SERVERS=["add.more.languages","allows.all.languages","catland.social","domain.test","european.server","for.testing","loony.tunes","mastodon.social","mstdn.srvr","other.server","test.server"]
-            formatted=$($ACTIVE_SERVERS | tr '[",]')
+            formatted=$(echo $ACTIVE_SERVERS | tr '[",]' ' ')
             echo "active_servers=$formatted" >> $GITHUB_OUTPUT
             echo $formatted
             if [ -n "$ACTIVE_SERVERS" ]; then
+              exit 0
             else
               echo "no active servers found"
               exit 0
