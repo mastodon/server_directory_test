@@ -37,7 +37,7 @@ jobs:
         # filter out which items from the second list are missing from the base list
         run: |
           FILES="add.more.languages allows.all.languages catland.social test.com european.server for.testing loony.tunes mastodon.social mstdn.srvr other.server server.something test.server"
-          MISSING=$(grep -vxf <(echo "$FILES" | tr ' ' '\n') <(echo "$steps.file_path.outputs.server_domains" | tr ' ' '\n') || true)
+          MISSING=$(grep -vxf <(echo "$FILES" | tr ' ' '\n') <(echo "${{ steps.file_path.outputs.server_domains }}" | tr ' ' '\n') || true)
           if [ -z "$MISSING" ]; then
             echo "all elements from server domains are in FILES"
           else
