@@ -34,8 +34,8 @@ jobs:
         run: |
           ACTIVE_SERVERS="add.more.languages allows.all.languages catland.social european.server for.testing loony.tunes mastodon.social mstdn.srvr other.server server.something test.server"
           DOMAINS="${{ steps.file_path.outputs.server_domains }}"
-          diff=$(grep -vxf <(echo "$ACTIVE_SERVERS") <(echo "$DOMAINS") || true)
-          MISSING=$(echo "$diff")
+          diff=$(grep -vxf <(echo "$ACTIVE_SERVERS" | tr ' ' '\n') <(echo "$DOMAINS" | tr ' ' '\n') || true)
+          MISSING=$(echo "$diff" | tr '\n' ' ')
           echo "missing_domains=$MISSING" >> $GITHUB_OUTPUT
 
           if [ -z "$MISSING" ]; then
