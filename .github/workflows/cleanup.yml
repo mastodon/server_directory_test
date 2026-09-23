@@ -13,6 +13,8 @@ permissions:
 env:
   TEST_FILE_PATH: ./servers/server.something.yml
 
+          # echo "server_paths=$(gh repo read-dir servers --repo mastodon/server_directory_test --json name,path --jq '.["entries"]')" >> $GITHUB_OUTPUT
+          # echo $server_paths
 jobs:
   cleanup-files:
     runs-on: ubuntu-latest
@@ -24,20 +26,18 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          echo "server_paths=$(gh repo read-dir servers --repo mastodon/server_directory_test --json name,path --jq '.["entries"]')" >> $GITHUB_OUTPUT
-          echo $server_paths
-          echo "server_domains=$(gh repo read-dir servers --repo mastodon/server_directory_test --json name --jq '.["entries"]')" >> $GITHUB_OUTPUT
+          echo "server_domains=$(gh repo read-dir servers --repo mastodon/server_directory_test --json name | jq -r '.["entries"] | .[] | .name' | xargs -I {} basename {} .yaml | xargs -I {} basename {} .yml)" >> $GITHUB_OUTPUT
           echo $server_domains
-      - name: echo server-paths
-        run: echo "${{ steps.file_path.outputs.server_paths }}"
+
+      # - name: echo server-paths
+      #   run: echo "${{ steps.file_path.outputs.server_paths }}"
       - name: echo server-domains
         run: echo "${{ steps.file_path.outputs.server_domains }}"
       - name: Request active server files
+        # filter out which items from the second list are missing from the base list
         run: |
-            FILES="add.more.languages allows.all.languages catland.social domain.test european.server for.testing loony.tunes mastodon.social mstdn.srvr other.server test.server"
-            for domain in $FILES; do
-              echo $domain
-            done
+            FILES="add.more.languages allows.all.languages catland.social test.com european.server for.testing loony.tunes mastodon.social mstdn.srvr other.server test.server"
+
       - name: Remove Test file
         run: |
           if [ -f ${{ env.TEST_FILE_PATH }} ]; then
