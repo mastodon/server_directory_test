@@ -37,7 +37,7 @@ jobs:
         id: files
         # filter out which items from the second list are missing from the base list
         run: |
-          ACTIVE_SERVERS="add.more.languages allows.all.languages catland.social test.com european.server for.testing loony.tunes mastodon.social mstdn.srvr other.server server.something test.server"
+          ACTIVE_SERVERS="add.more.languages allows.all.languages catland.social european.server for.testing loony.tunes mastodon.social mstdn.srvr other.server server.something test.server"
           DOMAINS="${{ steps.file_path.outputs.server_domains }}"
           MISSING=$(grep -vxf <(echo "$ACTIVE_SERVERS" | tr ' ' '\n') <(echo "$DOMAINS" | tr ' ' '\n') || true)
           echo "missing_domains=$MISSING" >> $GITHUB_OUTPUT
@@ -52,14 +52,20 @@ jobs:
       - name: echo missing-domains
         run: echo "${{ steps.files.outputs.missing_domains }}"
       - name: Remove Test file
+        if: ${{ steps.files.outputs.missing_domains != '' }}
         run: |
-          if [ -f ${{ env.TEST_FILE_PATH }} ]; then
-            rm ${{ env.TEST_FILE_PATH }}
-            echo "Test file removed."
-          else
-            echo "Test file not found."
-            exit  1
-          fi
+          MISSING=${{ steps.files.outputs.missing_domains }}
+
+          for domain in $MISSING; do
+            path="./servers/$domain"
+            if [ -f  $path ]; then
+              rm $path
+              echo "Test file removed."
+            else
+              echo "$path not fund."
+              exit  1
+            fi
+          done
         shell: bash
       # Create or update the pull request
       - name: Create Pull Request
