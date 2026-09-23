@@ -40,7 +40,7 @@ jobs:
             else
               echo "no active servers found"
               exit 0
-            end
+            fi
       - name: Compare active servers with server files
         id: files
         # filter out which items from the server domains list are missing from the active server list
