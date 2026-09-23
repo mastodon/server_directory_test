@@ -34,22 +34,19 @@ jobs:
         # ACTIVE_SERVERS=$(curl --silent --connect-timeout 5 "http://${domain}/dsr_opt_in.txt" )
         run: |
             ACTIVE_SERVERS=["add.more.languages","allows.all.languages","catland.social","domain.test","european.server","for.testing","loony.tunes","mastodon.social","mstdn.srvr","other.server","test.server"]
-            formatted=$(echo $ACTIVE_SERVERS | tr '[",]' ' ')
-            echo "active_servers=$formatted" >> $GITHUB_OUTPUT
-            echo $formatted
+
             if [ -n "$ACTIVE_SERVERS" ]; then
-              exit 0
+              formatted=$(echo $ACTIVE_SERVERS | tr '[",]' ' ')
+              echo "active_servers=$formatted" >> $GITHUB_OUTPUT
             else
               echo "no active servers found"
               exit 0
             fi
-      - name: echo formatted-domains
-        run: echo "${{ steps.curl.outputs.active_servers }}"
       - name: Compare active servers with server files
         id: files
         # filter out which items from the server domains list are missing from the active server list
         run: |
-          ACTIVE_SERVERS="add.more.languages allows.all.languages catland.social european.server for.testing loony.tunes mastodon.social mstdn.srvr other.server server.something test.server"
+          ACTIVE_SERVERS="${{ steps.curl.outputs.active_servers }}"
           DOMAINS="${{ steps.file_path.outputs.server_domains }}"
           diff=$(grep -vxf <(echo "$ACTIVE_SERVERS" | tr ' ' '\n') <(echo "$DOMAINS" | tr ' ' '\n') || true)
           MISSING=$(echo "$diff" | tr '\n' ' ')
