@@ -36,11 +36,13 @@ jobs:
 
             if [ -n "$ACTIVE_SERVERS" ]; then
               formatted=$($ACTIVE_SERVERS | tr '[",]' ' ')
-              echo "$formatted"
+              echo "active_servers=$formatted" >> $GITHUB_OUTPUT
             else
               echo "no active servers found"
               exit 0
             fi
+      - name: echo formatted-domains
+        run: echo "${{ steps.outputs.active_servers }}"
       - name: Compare active servers with server files
         id: files
         # filter out which items from the server domains list are missing from the active server list
