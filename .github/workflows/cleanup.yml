@@ -54,7 +54,7 @@ jobs:
       - name: Remove Test file
         if: ${{ steps.files.outputs.missing_domains != '' }}
         run: |
-          MISSING=${{ steps.files.outputs.missing_domains }}
+          MISSING="${{ steps.files.outputs.missing_domains }}"
 
           for domain in $MISSING; do
             path="./servers/$domain"
