@@ -39,14 +39,14 @@ jobs:
         run: |
           ACTIVE_SERVERS="add.more.languages allows.all.languages catland.social european.server for.testing loony.tunes mastodon.social mstdn.srvr other.server server.something test.server"
           DOMAINS="${{ steps.file_path.outputs.server_domains }}"
-          MISSING=$(grep -vxf <(echo "$ACTIVE_SERVERS" | tr ' ' '\n') <(echo "$DOMAINS" | tr ' ' '\n') || true)
+          MISS=$(grep -vxf <(echo "$ACTIVE_SERVERS" | tr ' ' '\n') <(echo "$DOMAINS" | tr ' ' '\n') || true)
+          MISSING=$(echo "$MISS" | tr '\n' ' ')
           echo "missing_domains=$MISSING" >> $GITHUB_OUTPUT
 
           if [ -z "$MISSING" ]; then
             echo "all elements from server domains are in ACTIVE_SERVERS"
           else
-            MISSING_SPACE=$(echo "$MISSING" | tr '\n' ' ')
-            echo "missing elements $MISSING_SPACE"
+            echo "missing elements $MISSING"
           fi
         shell: bash
       - name: echo missing-domains
