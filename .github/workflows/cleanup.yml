@@ -26,7 +26,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          echo "server_domains=$(gh repo read-dir servers --repo mastodon/server_directory_test --json name | jq -r '.["entries"] | .[] | .name' | xargs -I {} basename {} .yml | xargs -I {} basename {} .yaml)" >> $GITHUB_OUTPUT
+          echo "server_domains=$(gh repo read-dir servers --repo mastodon/server_directory_test --json name | jq -r '.["entries"] | .[] | .name' | xargs -I {} basename {} .yml | xargs -I {} basename {} .yaml | xargs)" >> $GITHUB_OUTPUT
           echo $server_domains
 
       # - name: echo server-paths
@@ -37,12 +37,13 @@ jobs:
         # filter out which items from the second list are missing from the base list
         run: |
             FILES="add.more.languages allows.all.languages catland.social test.com european.server for.testing loony.tunes mastodon.social mstdn.srvr other.server server.something test.server"
-            MISSING=$(grep -vxf <(echo "$FILES" | tr ' ' '\n') <(echo "$domains") || true)
+            MISSING=$(grep -vxf <(echo "$FILES" | tr ' ' '\n') <(echo "$domains" | tr ' ' '\n') || true)
 
             if [ -z "$MISSING" ]; then
               echo "all elements from server domains are in FILES"
             else
-              echo "missing elements $MISSING"
+              MISSING_SPACE=$(echo "$MISSING" | tr '\n' ' ')
+              echo "missing elements $MISSING_SPACE"
             fi
 
       - name: Remove Test file
