@@ -19,18 +19,18 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v7
-      # - name: Read filenames in server dir
-      #   id: file_path
-      #   env:
-      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      #   run: |
-      #     {
-      #       echo 'server_domains<<EOF'
-      #       gh repo read-dir servers --repo mastodon/server_directory --json name | jq -r '.["entries"] | .[] | .name' | xargs -I {} basename {} .yml | xargs -I {} basename {} .yaml | xargs
-      #       echo EOF
-      #     } >> "$GITHUB_OUTPUT"
-      # - name: echo server-domains
-      #   run: echo "${{ steps.file_path.outputs.server_domains }}"
+      - name: Read filenames in server dir
+        id: file_path
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          {
+            echo 'server_domains<<EOF'
+            gh repo read-dir servers --repo mastodon/server_directory --json name | jq -r '.["entries"] | .[] | .name' | xargs -I {} basename {} .yml | xargs -I {} basename {} .yaml | xargs
+            echo EOF
+          } >> "$GITHUB_OUTPUT"
+      - name: echo server-domains
+        run: echo "${{ steps.file_path.outputs.server_domains }}"
       # when active servers are not empty the response gets formatted
       - name: Request active server files
         id: request
@@ -48,6 +48,8 @@ jobs:
             echo "no active servers found"
             exit 1
           fi
+      - name: echo active servers
+        run: echo "${{ steps.request.outputs.active_servers }}"
       - name: Compare active servers with server files
         id: files
         # filter out which items from the server domains list are missing from the active server list
