@@ -36,11 +36,19 @@ jobs:
         run: echo "${{ steps.file_path.outputs.server_domains }}"
       # when active servers are not empty the response gets formatted
       - name: Request active server files
-        id: curl
+        id: request
         # ACTIVE_SERVERS=$(curl --silent --connect-timeout 5 "http://${domain}/dsr_opt_in.txt" )
         run: |
-            ACTIVE_SERVERS=$(curl --connect-timeout 1000 "http://api.joinmastodon.org/active-servers/" )
-
+          {
+            echo 'ACTIVE_SERVERS<<EOF'
+            curl --connect-timeout 1000 "http://api.joinmastodon.org/active-servers/"
+            echo EOF
+          } >> "$GITHUB_OUTPUT"
+      - name: Echo active servers to file
+        run: echo $(jq '. ' /tmp/active_servers_output.json
+      - name: format active server files
+        id: curl
+        run: |
             if [ -n "$ACTIVE_SERVERS" ]; then
               formatted=$(echo $ACTIVE_SERVERS | tr '[",]' ' ')
               echo "active_servers=$formatted" >> $GITHUB_OUTPUT
