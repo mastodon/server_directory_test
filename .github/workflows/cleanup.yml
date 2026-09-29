@@ -44,8 +44,8 @@ jobs:
             curl -L http://api.joinmastodon.org/active-servers/
             echo EOF
           } >> "$GITHUB_OUTPUT"
-      - name: Echo active servers to file
-        run: echo $(jq '. ' /tmp/active_servers_output.json)
+      # - name: Echo active servers to file
+      #   run: echo $(jq '. ' /tmp/active_servers_output.json)
       - name: echo active servers
         run: echo "${{ steps.request.outputs.active_servers }}"
       - name: format active server files
