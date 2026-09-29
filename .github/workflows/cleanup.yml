@@ -45,7 +45,7 @@ jobs:
             echo EOF
           } >> "$GITHUB_OUTPUT"
       - name: Echo active servers to file
-        run: echo $(jq '. ' /tmp/active_servers_output.json
+        run: echo $(jq '. ' /tmp/active_servers_output.json)
       - name: format active server files
         id: curl
         run: |
