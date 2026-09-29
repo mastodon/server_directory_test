@@ -40,19 +40,21 @@ jobs:
         # ACTIVE_SERVERS=$(curl --silent --connect-timeout 5 "http://${domain}/dsr_opt_in.txt" )
         run: |
           {
-            echo 'active_servers<<EOF'
+            echo 'ACTIVE_SERVERS<<EOF'
             curl -L http://api.joinmastodon.org/active-servers/ | jq xargs
             echo EOF
-          } >> "$GITHUB_OUTPUT"
+          } >> "$GITHUB_ENV"
       # - name: Echo active servers to file
       #   run: echo $(jq '. ' /tmp/active_servers_output.json)
       - name: echo active servers
-        run: echo "${{ steps.request.outputs.active_servers }}"
+        run: echo "$ACTIVE_SERVERS"
+      - name: echo active servers synt
+        run: echo "${{ ACTIVE_SERVERS }}"
       - name: format active server files
         id: curl
         run: |
-            if [ -n "${{ steps.request.outputs.active_servers }}" ]; then
-              formatted=$(echo ${{ steps.request.outputs.active_servers }} | tr '[",]' ' ')
+            if [ -n "$ACTIVE_SERVERS" ]; then
+            formatted=$(echo $ACTIVE_SERVERS | tr '[",]' ' ')
               echo "active_servers=$formatted" >> $GITHUB_OUTPUT
             else
               echo "no active servers found"
