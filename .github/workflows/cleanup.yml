@@ -39,19 +39,15 @@ jobs:
         # ACTIVE_SERVERS=$(curl --silent --connect-timeout 5 "http://${domain}/dsr_opt_in.txt" )
         # curl -L http://api.joinmastodon.org/active-servers/
         run: |
-          echo "ACTIVE_SERVERS=$(curl -L "http://api.joinmastodon.org/active-servers/")" >> $GITHUB_OUTPUT
-      - name: echo active servers
-        run: echo "$ACTIVE_SERVERS"
-      - name: format active server files
-        id: curl
-        run: |
-            if [ -n "$ACTIVE_SERVERS" ]; then
-              formatted=$(echo $ACTIVE_SERVERS | tr '[",]' ' ')
-              echo "active_servers=$formatted" >> $GITHUB_OUTPUT
-            else
-              echo "no active servers found"
-              exit 1
-            fi
+          ACTIVE_SERVERS=$(curl -L "http://api.joinmastodon.org/active-servers/")
+
+          if [ -n "$ACTIVE_SERVERS" ]; then
+            formatted=$(echo $ACTIVE_SERVERS | tr '[",]' ' ')
+            echo "active_servers=$formatted" >> $GITHUB_OUTPUT
+          else
+            echo "no active servers found"
+            exit 1
+          fi
       - name: Compare active servers with server files
         id: files
         # filter out which items from the server domains list are missing from the active server list
