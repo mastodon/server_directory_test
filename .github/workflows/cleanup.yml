@@ -29,9 +29,9 @@ jobs:
             gh repo read-dir servers --repo mastodon/server_directory --json name | jq -r '.["entries"] | .[] | .name' | xargs -I {} basename {} .yml | xargs -I {} basename {} .yaml | xargs
             echo EOF
           } >> "$GITHUB_OUTPUT"
-
-      - name: Echo to file
-        run: echo $(jq '. ' /tmp/workflow_output.json)
+#
+#       - name: Echo to file
+#         run: echo $(jq '. ' /tmp/workflow_output.json)
       - name: echo server-domains
         run: echo "${{ steps.file_path.outputs.server_domains }}"
       # when active servers are not empty the response gets formatted
@@ -41,16 +41,18 @@ jobs:
         run: |
           {
             echo 'active_servers<<EOF'
-            curl -L --connect-timeout 1000 "http://api.joinmastodon.org/active-servers/"
+            curl -L http://api.joinmastodon.org/active-servers/
             echo EOF
           } >> "$GITHUB_OUTPUT"
       - name: Echo active servers to file
         run: echo $(jq '. ' /tmp/active_servers_output.json)
+      - name: echo active servers
+        run: echo "${{ steps.request.outputs.active_servers }}"
       - name: format active server files
         id: curl
         run: |
-            if [ -n "$ACTIVE_SERVERS" ]; then
-              formatted=$(echo $ACTIVE_SERVERS | tr '[",]' ' ')
+            if [ -n "${{ steps.request.outputs.active_servers }}" ]; then
+              formatted=$(echo ${{ steps.request.outputs.active_servers }} | tr '[",]' ' ')
               echo "active_servers=$formatted" >> $GITHUB_OUTPUT
             else
               echo "no active servers found"
