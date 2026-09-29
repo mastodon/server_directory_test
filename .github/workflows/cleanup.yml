@@ -41,7 +41,7 @@ jobs:
         run: |
           {
             echo 'active_servers<<EOF'
-            curl -L http://api.joinmastodon.org/active-servers/
+            curl -L http://api.joinmastodon.org/active-servers/ | jq xargs
             echo EOF
           } >> "$GITHUB_OUTPUT"
       # - name: Echo active servers to file
