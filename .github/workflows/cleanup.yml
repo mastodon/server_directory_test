@@ -41,7 +41,7 @@ jobs:
         run: |
           {
             echo 'active_servers<<EOF'
-            curl http://api.joinmastodon.org/active-servers/
+            curl -L --connect-timeout 1000 "http://api.joinmastodon.org/active-servers/"
             echo EOF
           } >> "$GITHUB_OUTPUT"
       - name: Echo active servers to file
